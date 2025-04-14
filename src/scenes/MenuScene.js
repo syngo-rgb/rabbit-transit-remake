@@ -27,7 +27,10 @@ export class MenuScene extends Scene {
     const direction = this.inputManager.getMenuNavigation();
     
     if (this.cursor) {
-      this.scene.start("level-one");
+      // Initialize lives
+      this.registry.set('lives', 3);
+      this.scene.start("level-one", { lives: this.registry.get('lives') });
+      // this.scene.start('game-scene', { level: 'level1', phase: 'phase1' })
     } 
   }
 }
