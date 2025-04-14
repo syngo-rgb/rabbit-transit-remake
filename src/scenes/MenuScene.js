@@ -14,6 +14,12 @@ export class MenuScene extends Scene {
 
     this.add.sprite(x * 0.5, y * 0.5, "rabbit");
 
+    this.add.text(x * 0.5, y * 0.26, "RABBIT TRANSIT",  {
+      fontSize: "8px",
+      fontFamily: "'Press Start 2P'",
+      color: "#ffffff",
+    }).setOrigin(0.5)
+
     this.inputManager = new InputManager(this);
     this.inputManager.setup();
 
@@ -22,15 +28,30 @@ export class MenuScene extends Scene {
   }
 
   update() {
-    // Joysticks Input
+    // Detectar input de joystick o teclado
     this.inputManager.update();
-    const direction = this.inputManager.getMenuNavigation();
-    
-    if (this.cursor) {
-      // Initialize lives
-      this.registry.set('lives', 3);
-      this.scene.start("level-one", { lives: this.registry.get('lives') });
-      // this.scene.start('game-scene', { level: 'level1', phase: 'phase1' })
-    } 
+
+    // Detecta si hay movimiento en los ejes del joystick
+    const movement = this.inputManager.getMovement();
+    const isJoystickMoved = Math.abs(movement.x) > 0 || Math.abs(movement.y) > 0;
+
+    // Detecta si se presiona cualquier botón del joystick
+    const isButtonPressed = this.inputManager.pad?.buttons.some(button => button.pressed);
+
+    // Detecta si se presiona una tecla del teclado
+    const isKeyPressed =
+      this.cursor.up.isDown ||
+      this.cursor.down.isDown ||
+      this.cursor.left.isDown ||
+      this.cursor.right.isDown;
+
+    if (isKeyPressed || isJoystickMoved || isButtonPressed) {
+      // Inicializa las vidas
+      this.registry.set("lives", 3);
+
+      // Cambia a la escena del nivel uno
+      this.scene.start("level-one", { lives: this.registry.get("lives") });
+    }
   }
+
 }

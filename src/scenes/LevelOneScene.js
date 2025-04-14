@@ -126,10 +126,19 @@ export class LevelOneScene extends Scene {
 // Reaparecer al otro lado si sale de la pantalla
   if (dir === 1 && butterfly.x > this.sys.game.config.width) {
     butterfly.x = -this.tileSize
-    } else if (dir === -1 && butterfly.x < -this.tileSize) {
-      butterfly.x = this.sys.game.config.width
-    }
+    } else 
+    if (dir === -1 && butterfly.x < -this.tileSize) {
+        butterfly.x = this.sys.game.config.width
+      }
     })
+
+    if (this.player.lives <= 0) {
+      this.scene.start('main-menu')
+    }
+
+    if (this.playerPos.x == 8 && this.playerPos.y == 9) {
+      this.scene.start("Level-Two")
+    }
   }
 
   handleCollision(player, butterfly) {
