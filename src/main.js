@@ -14,12 +14,12 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-
+  backgroundColor: "#262626", // 000000  o Negro o Gris
   pixelArt: true,
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 500 },
+      gravity: { y: 0 },
       debug: false,
     },
   },
@@ -27,7 +27,6 @@ const config = {
     gamepad: true
   },
 
-  backgroundColor: "#262626", // 000000  o Negro o Gris
   scene: [BootScene, MenuScene, LevelOneScene, LevelTwoScene]
 }
 

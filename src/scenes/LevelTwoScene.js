@@ -14,7 +14,10 @@ export class LevelTwoScene extends Scene {
     const { level = 'level1', phase = 'phase2' } = data || {}
     const current = levelData[level][phase]
 
-    this.add.image(160, 112, 'background')
+    this.add.image(160, 112, 'fase2background').setDepth(1)
+    const olas = this.add.sprite(160, 112, '')
+    olas.setDepth(10)
+    olas.play("olas-idle", true)
 
     this.gridCols = 16
     this.gridRows = 11
@@ -34,7 +37,31 @@ export class LevelTwoScene extends Scene {
     ).setScale(1)
     this.player.body.setAllowGravity(false);
     this.player.setOrigin(0)
+    this.player.setDepth(20)
     this.player.lives = data.lives || 3;
+
+    this.plataformas = this.physics.add.staticGroup()
+
+    // Añadimos plataformas en la grilla
+    for (let y = 0; y < this.gridRows; y++) {
+      for (let x = 0; x < this.gridCols; x++) {
+        const plataforma = this.add.sprite(
+          x * this.tileSize,
+          y * this.tileSize + this.tileSize, "platforma"
+        );
+        plataforma.setOrigin(0.2, 1);
+        plataforma.setAlpha(0);
+        plataforma.setDepth(2)
+        this.plataformas.add(plataforma);
+
+        // Si coincide con la posición del conejo, pintamos la plataforma de verde
+        if (x === this.playerPos.x && y === this.playerPos.y) {
+          plataforma.setTint(0x00ff00);
+        } else {
+          plataforma.setTint(0x808080); // Color gris para el resto
+        }
+      }
+    }
 
     this.cursors = this.input.keyboard.createCursorKeys()
 
@@ -77,14 +104,31 @@ export class LevelTwoScene extends Scene {
       const newY = this.playerPos.y + moveY
 
       if (this.canMoveTo(newX, newY)) {
-        console.log(newX)
-        console.log(newY)
         this.playerPos.x = newX
         this.playerPos.y = newY
         this.player.setPosition(
           this.playerPos.x * this.tileSize,
           this.playerPos.y * this.tileSize
         )
+      }
+      
+      // Actualizamos el color de las plataformas en cada movimiento
+      this.plataformas.getChildren().forEach((plataforma) => {
+        const plataformaX = plataforma.x / this.tileSize;
+        const plataformaY = (plataforma.y - this.tileSize) / this.tileSize;
+      
+        if (plataformaX === this.playerPos.x && plataformaY === this.playerPos.y && this.playerPos.y != 9) {
+          plataforma.setAlpha(1)
+          plataforma.setTint(0x00ff00); // Pintar verde si coincide
+        } 
+        // else {
+        //   plataforma.setTint(0x808080); // Pintar gris para el resto
+        // }
+      });
+
+      // Voltear el sprite en el eje X según la dirección
+      if (moveX !== 0) {
+        this.player.flipX = moveX < 0; // Voltea si va a la izquierda
       }
 
       this.lastMoveTime = time
@@ -93,7 +137,6 @@ export class LevelTwoScene extends Scene {
 
   canMoveTo (x, y) {
     const fallback = x >= 0 && x < this.gridCols && y >= this.limitTopRow && y <= this.limitBottomRow
-
     if (this.walkableMap?.[y]?.[x] !== undefined) {
       return this.walkableMap[y][x] === true
     }

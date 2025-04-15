@@ -18,6 +18,7 @@ export class MenuScene extends Scene {
       fontSize: "8px",
       fontFamily: "'Press Start 2P'",
       color: "#ffffff",
+      letterSpacing: 3, // Espaciado entre letras en píxeles
     }).setOrigin(0.5)
 
     this.inputManager = new InputManager(this);

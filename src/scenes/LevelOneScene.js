@@ -1,6 +1,7 @@
 import { Scene } from 'phaser'
 import { InputManager } from '../components/InputManager'
 import { levelData } from '../data/levelData'
+import { initialAnimations } from '../anims/anims'
 
 export class LevelOneScene extends Scene {
   constructor () {
@@ -9,11 +10,14 @@ export class LevelOneScene extends Scene {
 
   create (data) {
     console.log("LevelOneScene created")
+    initialAnimations(this)
 
     const { level = 'level1', phase = 'phase1' } = data || {}
     const current = levelData[level][phase]
 
     this.add.image(160, 112, 'background')
+    const olas = this.add.sprite(160, 112, '')
+    olas.play("olas-idle", true)
 
     this.gridCols = 16
     this.gridRows = 11
@@ -31,9 +35,11 @@ export class LevelOneScene extends Scene {
       'rabbit'
     ).setScale(1)
     this.player.body.setAllowGravity(false);
-    this.player.setOrigin(0)
-    this.player.lives = data.lives || 3;
+    console.log(data.lives)
 
+    this.player.lives = data.lives || 3;
+    this.player.setOrigin(0)
+  
     this.cursors = this.input.keyboard.createCursorKeys()
 
     this.inputManager = new InputManager(this)
@@ -65,7 +71,7 @@ export class LevelOneScene extends Scene {
 
     // === SETUP COLLISION DETECTION ===
     // Modify the collision callback to decrease the player's lives
-    this.physics.add.overlap(this.player, this.butterflies, this.handleCollision(this.player, this.butterflies), null, this);
+    this.physics.add.overlap(this.player, this.butterflies, this.handleCollision, null, this);
   }
 
 
@@ -143,12 +149,12 @@ export class LevelOneScene extends Scene {
 
   handleCollision(player, butterfly) {
       this.player.lives -= 1;
-      console.log('Player lives:', this.player.lives);  
+      this.registry.set("lives", this.player.lives);
+      this.scene.start("level-one", { lives: this.registry.get("lives") })
   }
 
   canMoveTo (x, y) {
     const fallback = x >= 0 && x < this.gridCols && y >= this.limitTopRow && y <= this.limitBottomRow
-
     if (this.walkableMap?.[y]?.[x] !== undefined) {
       return this.walkableMap[y][x] === true
     }
@@ -160,7 +166,6 @@ export class LevelOneScene extends Scene {
     const y = row * this.tileSize
     const startX = direction === 'right' ? -this.tileSize : this.sys.game.config.width
 
-    console.log("hola")
     const butterfly = this.add.sprite(startX, y, 'mariposa')
     butterfly.setOrigin(0.5)
     butterfly.setScale(1) // 🦋 Escala original, respeta tamaño nativo (5x5)
@@ -173,6 +178,4 @@ export class LevelOneScene extends Scene {
 
     this.butterflies.add(butterfly)
   }
-  
-
 }
