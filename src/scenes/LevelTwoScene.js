@@ -6,6 +6,10 @@ import { InputManager } from "../components/InputManager";
 export class LevelTwoScene extends Scene {
   constructor() {
     super("Level-Two");
+
+    this.paintedPlatform = new Array()
+    this.colors = [0xff0000, 0xffff00, 0x00ff00, 0x000000, 0xffffff]; // rojo, amarillo, Verde
+    this.colorIndex = 0;
   }
 
   create(data) {
@@ -78,6 +82,26 @@ export class LevelTwoScene extends Scene {
     // Joysticks Input
     this.inputManager.update();
 
+    if (this.paintedPlatform.length === 42) 
+    {
+      this.physics.pause();
+
+    this.plataformas.getChildren().forEach((plataforma) => { 
+      // Por cada plataforma
+      this.time.addEvent({
+        delay: 1100,
+        loop: true,
+        callback: () => {
+          this.colorIndex = (this.colorIndex + 1) % this.colors.length;
+          plataforma.setTint(this.colors[this.colorIndex]);
+        }
+      })
+    })
+
+      // Puntaje
+      // this.scene.start("cut-scene") 
+    }
+
     let moveX = 0
     let moveY = 0
 
@@ -122,6 +146,11 @@ export class LevelTwoScene extends Scene {
         if (plataformaX === this.playerPos.x && plataformaY === this.playerPos.y && this.playerPos.y != 9) {
           plataforma.setAlpha(1)
           plataforma.setTint(0x00ff00); // Pintar verde si coincide
+
+          if (!this.paintedPlatform.includes(plataforma)) {
+            // Añadir puntos por plataforma pintada
+            this.paintedPlatform.push(plataforma)
+          }
         } 
         // else {
         //   plataforma.setTint(0x808080); // Pintar gris para el resto

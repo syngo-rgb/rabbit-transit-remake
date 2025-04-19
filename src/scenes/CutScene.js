@@ -34,6 +34,6 @@ export class CutScene extends Phaser.Scene {
   startNextScene() {
     // Cambiá esto según la lógica de tu juego
     // Por ejemplo, podrías tener reglas para decidir a qué fase o nivel ir
-    this.scene.start('GameScene', { level: this.level, phase: this.phase });
+    this.scene.start('level-one', { level: this.level, phase: this.phase });
   }
 }

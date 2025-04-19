@@ -12,7 +12,7 @@ export class MenuScene extends Scene {
   create() {
     const x = this.scale.width
     const y = this.scale.height
-    this.add.sprite(x  * 0.5,y  * 0.5, "background").setDepth(0);
+    this.add.sprite(x  * 0.5,y  * 0.5, "background2").setDepth(0);
     initialAnimations(this)
 
     // 🎛️ Crear e iniciar el SoundManager
@@ -36,12 +36,15 @@ export class MenuScene extends Scene {
     this.player = this.add.sprite(x * 0.5, y * 0.5, "rabbit");
     this.player.play("rabbit_right", true)
 
-    this.add.text(x * 0.5, y * 0.26, "TRANSITINI CONEJINNI",  {
-      fontSize: "8px",
-      fontFamily: "'Press Start 2P'",
-      color: "#ffffff",
-      letterSpacing: 3, // Espaciado entre letras en píxeles
-    }).setOrigin(0.5)
+    this.tittle = this.add.sprite(x * 0.5, y * 0.28, "tittle").setOrigin(0.5)
+    this.tittle.play("tittle_idle", true)
+
+    // this.add.text(x * 0.5, y * 0.26, "TRANSITINI CONEJINNI",  {
+    //   fontSize: "12px",
+    //   fontFamily: "'Press Start 2P'",
+    //   color: "#ffffff",
+    //   letterSpacing: 3, // Espaciado entre letras en píxeles
+    // }).setOrigin(0.5)
 
     this.inputManager = new InputManager(this);
     this.inputManager.setup();

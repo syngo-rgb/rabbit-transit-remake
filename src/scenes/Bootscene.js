@@ -7,8 +7,15 @@ export class BootScene extends Scene {
   }
 
   preload() {
+    this.load.spritesheet("tittle", "./assets/title.png",  {
+      frameWidth: 166,
+      frameHeight: 8,
+    });
+
     this.load.image("background", "./assets/pradera.png");
     this.load.image("fase2background", "./assets/fase2.png");
+    this.load.image("background2", "./assets/pradera2.png");
+
     this.load.spritesheet("rabbit", "./assets/rabbit.png",  {
       frameWidth: 13,
       frameHeight: 15,

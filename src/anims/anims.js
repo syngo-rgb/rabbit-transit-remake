@@ -29,6 +29,16 @@ export function initialAnimations(scene) {
         repeat: -1,
         frameRate: 3,
       });
+
+      scene.anims.create({
+        key: "tittle_idle",
+        frames: scene.anims.generateFrameNumbers("tittle", {
+          start: 0,
+          end: 1,
+        }),
+        repeat: -1,
+        frameRate: 3,
+      });
   
     //   scene.anims.create({
     //     key: "",
