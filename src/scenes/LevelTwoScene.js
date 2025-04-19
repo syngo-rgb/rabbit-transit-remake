@@ -1,4 +1,4 @@
-// first charges
+// scenes/LevelTwoScene.js
 import { Scene } from "phaser";
 import { levelData } from "../data/levelData";
 import { InputManager } from "../components/InputManager";
@@ -10,6 +10,8 @@ export class LevelTwoScene extends Scene {
 
   create(data) {
     console.log("LevelTwoScene created")
+    this.soundManager = this.registry.get("soundManager");
+    this.soundManager.playMusic("music_level2");
 
     const { level = 'level1', phase = 'phase2' } = data || {}
     const current = levelData[level][phase]

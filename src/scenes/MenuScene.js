@@ -1,6 +1,8 @@
-// first charges
+// scenes/MenuScene.js
 import { Scene } from "phaser";
 import { InputManager } from "../components/InputManager";
+import { initialAnimations } from "../anims/anims";
+import { SoundManager } from "../managers/SoundManager";
 
 export class MenuScene extends Scene {
   constructor() {
@@ -10,11 +12,31 @@ export class MenuScene extends Scene {
   create() {
     const x = this.scale.width
     const y = this.scale.height
-    this.add.sprite(x  * 0.5,y  * 0.5, "background");
+    this.add.sprite(x  * 0.5,y  * 0.5, "background").setDepth(0);
+    initialAnimations(this)
 
-    this.add.sprite(x * 0.5, y * 0.5, "rabbit");
+    // 🎛️ Crear e iniciar el SoundManager
+    this.soundManager = new SoundManager(this);
+    this.soundManager.initSounds();
+    this.soundManager.playMusic("music_menu");
+    
+    // 💾 Guardamos el SoundManager en el registro para usarlo luego
+    this.registry.set("soundManager", this.soundManager);
 
-    this.add.text(x * 0.5, y * 0.26, "RABBIT TRANSIT",  {
+    // Background
+    const olas = this.add.sprite(160, 112, 'olas').setDepth(1);
+    olas.play("olas-idle", true)
+
+    this.nube = this.add.tileSprite(x * 0.5, y * 0.1, 0, 0, "nube").setDepth(1);
+    this.parallax = [{
+      speed: 0.2,
+      sprite: this.nube
+    }]
+
+    this.player = this.add.sprite(x * 0.5, y * 0.5, "rabbit");
+    this.player.play("rabbit_right", true)
+
+    this.add.text(x * 0.5, y * 0.26, "TRANSITINI CONEJINNI",  {
       fontSize: "8px",
       fontFamily: "'Press Start 2P'",
       color: "#ffffff",
@@ -52,7 +74,15 @@ export class MenuScene extends Scene {
 
       // Cambia a la escena del nivel uno
       this.scene.start("level-one", { lives: this.registry.get("lives") });
+      this.soundManager.stop("music_menu");
     }
+
+    this.moveParallax();
   }
 
+  moveParallax() {
+    this.parallax.forEach((layer) => {
+      layer.sprite.tilePositionX += layer.speed;
+    });
+  }
 }

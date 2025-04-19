@@ -10,14 +10,25 @@ export function initialAnimations(scene) {
         frameRate: 4,
       });
   
-    //   scene.anims.create({
-    //     key: "",
-    //     frames: scene.anims.generateFrameNumbers("", {
-    //       start: 10,
-    //       end: 10,
-    //     }),
-    //     frameRate: 10,
-    //   });
+      scene.anims.create({
+        key: "rabbit_right",
+        frames: scene.anims.generateFrameNumbers("rabbit", {
+          start: 0,
+          end: 1,
+        }),
+        repeat: -1,
+        frameRate: 3,
+      });
+
+      scene.anims.create({
+        key: "rabbit_left",
+        frames: scene.anims.generateFrameNumbers("rabbit", {
+          start: 2,
+          end: 3,
+        }),
+        repeat: -1,
+        frameRate: 3,
+      });
   
     //   scene.anims.create({
     //     key: "",

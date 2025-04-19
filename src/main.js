@@ -1,9 +1,9 @@
 import { BootScene } from './scenes/Bootscene.js'
-
 import { MenuScene } from './scenes/MenuScene.js'
 import { LevelOneScene } from './scenes/LevelOneScene.js'
 import { LevelTwoScene } from './scenes/LevelTwoScene.js'
-// import { CutScene } from './scenes/CutScene.js'
+import { CutScene } from './scenes/CutScene.js' 
+
 // import { UIScene } from './scenes/UIScene.js'
 
 const config = {
@@ -27,7 +27,7 @@ const config = {
     gamepad: true
   },
 
-  scene: [BootScene, MenuScene, LevelOneScene, LevelTwoScene]
+  scene: [BootScene, MenuScene, LevelOneScene, LevelTwoScene, CutScene]
 }
 
 export default new Phaser.Game(config);

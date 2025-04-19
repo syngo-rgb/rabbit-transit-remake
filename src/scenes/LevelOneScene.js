@@ -1,3 +1,4 @@
+// scenes/LevelOneScene.js
 import { Scene } from 'phaser'
 import { InputManager } from '../components/InputManager'
 import { levelData } from '../data/levelData'
@@ -15,9 +16,15 @@ export class LevelOneScene extends Scene {
     const { level = 'level1', phase = 'phase1' } = data || {}
     const current = levelData[level][phase]
 
+    this.soundManager = this.registry.get("soundManager");
+    this.soundManager.playMusic("music_level1");
+    console.log("hola")
+
+    // Background
     this.add.image(160, 112, 'background')
     const olas = this.add.sprite(160, 112, '')
     olas.play("olas-idle", true)
+
 
     this.gridCols = 16
     this.gridRows = 11
@@ -35,10 +42,23 @@ export class LevelOneScene extends Scene {
       'rabbit'
     ).setScale(1)
     this.player.body.setAllowGravity(false);
+    this.player.play("rabbit_right", true)
     console.log(data.lives)
 
     this.player.lives = data.lives || 3;
     this.player.setOrigin(0)
+
+    // Vidas Abajo
+    this.arrayHP =  [];
+    const HpStepsX = 10;
+    let positionHP = 20;
+
+    for (let i = 0; i < this.player.lives; i++) {
+      this.arrayHP.push(
+        this.add.sprite(positionHP, 210, "rabbit_life").setDepth(20)
+      );
+      positionHP += HpStepsX;
+    }
   
     this.cursors = this.input.keyboard.createCursorKeys()
 
@@ -85,15 +105,19 @@ export class LevelOneScene extends Scene {
     if (this.cursors.up.isDown && this.cursors.left.isDown) {
       moveY = -1
       moveX = -1
+      this.player.play("rabbit_right", true)
     } else if (this.cursors.up.isDown && this.cursors.right.isDown) {
       moveY = -1
       moveX = 1
+      this.player.play("rabbit_right", true)
     } else if (this.cursors.down.isDown && this.cursors.left.isDown) {
       moveY = 1
       moveX = -1
+      this.player.play("rabbit_left", true)
     } else if (this.cursors.down.isDown && this.cursors.right.isDown) {
       moveY = 1
       moveX = 1
+      this.player.play("rabbit_left", true)
     }
 
     const movement = this.inputManager.getMovement()
@@ -140,17 +164,19 @@ export class LevelOneScene extends Scene {
 
     if (this.player.lives <= 0) {
       this.scene.start('main-menu')
+      this.soundManager.stop("music_level1");
     }
 
     if (this.playerPos.x == 8 && this.playerPos.y == 9) {
       this.scene.start("Level-Two")
+      this.soundManager.stop("music_level1");
     }
   }
 
   handleCollision(player, butterfly) {
-      this.player.lives -= 1;
-      this.registry.set("lives", this.player.lives);
-      this.scene.start("level-one", { lives: this.registry.get("lives") })
+    this.player.lives -= 1;
+    this.registry.set("lives", this.player.lives);
+    this.scene.start("level-one", { lives: this.registry.get("lives") })
   }
 
   canMoveTo (x, y) {
