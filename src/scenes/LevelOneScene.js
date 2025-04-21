@@ -42,11 +42,14 @@ export class LevelOneScene extends Scene {
       'rabbit'
     ).setScale(1)
     this.player.body.setAllowGravity(false);
-    this.player.play("rabbit_right", true)
+    this.player.play("rabbit_right_idle", true).setOrigin(0.5)
     console.log(data.lives)
 
     this.player.lives = data.lives || 3;
-    this.player.setOrigin(0)
+    this.player.setOrigin(0.5)
+
+    // Salto
+    this.isJumping = false
 
     // Vidas Abajo
     this.arrayHP =  [];
@@ -102,74 +105,76 @@ export class LevelOneScene extends Scene {
     let moveX = 0
     let moveY = 0
 
-    if (this.cursors.up.isDown && this.cursors.left.isDown) {
-      moveY = -1
-      moveX = -1
-      this.player.play("rabbit_right", true)
-    } else if (this.cursors.up.isDown && this.cursors.right.isDown) {
-      moveY = -1
-      moveX = 1
-      this.player.play("rabbit_right", true)
-    } else if (this.cursors.down.isDown && this.cursors.left.isDown) {
-      moveY = 1
-      moveX = -1
-      this.player.play("rabbit_left", true)
-    } else if (this.cursors.down.isDown && this.cursors.right.isDown) {
-      moveY = 1
-      moveX = 1
-      this.player.play("rabbit_left", true)
-    }
+    // === ACTUALIZAR MARIPOSAS ===
+    this.butterflies.children.iterate(butterfly => {
+      if (!butterfly) return
+      
+      const dir = butterfly.direction === 'right' ? 1 : -1
+      butterfly.x += dir * butterfly.speed * this.game.loop.delta / 1000
+      
+      // Movimiento vertical oscilante
+      butterfly.y = butterfly.baseY + Math.sin(this.time.now * butterfly.frequency) * butterfly.amplitude
+      
+      // Reaparecer al otro lado si sale de la pantalla
+      if (dir === 1 && butterfly.x > this.sys.game.config.width) {
+      butterfly.x = -this.tileSize
+      } else 
+      if (dir === -1 && butterfly.x < -this.tileSize) {
+          butterfly.x = this.sys.game.config.width
+        }
+      })
+  
+      if (this.player.lives <= 0) {
+        this.soundManager.stop("music_level1");
+        this.scene.start('main-menu')
+
+      }
+  
+      if (this.playerPos.x == 8 && this.playerPos.y == 9) {
+        this.soundManager.stop("music_level1");
+        this.scene.start("Level-Two")
+      }
+
+    if (this.isJumping) return;
 
     const movement = this.inputManager.getMovement()
     if (Math.abs(movement.x) > 0.5 && Math.abs(movement.y) > 0.5) {
       moveX = movement.x > 0 ? 1 : -1
       moveY = movement.y > 0 ? 1 : -1
-    }
+      if ( moveY === -1 && moveX === -1) {
+        this.jump_rabbit("up", "left", moveX, moveY, time) 
 
-    if ((moveX || moveY) && time > this.lastMoveTime + this.moveDelay) {
-      const newX = this.playerPos.x + moveX
-      const newY = this.playerPos.y + moveY
+      } else if ( moveY === -1 && moveX === 1) {
+        this.jump_rabbit("up", "right", moveX, moveY, time) 
 
-      if (this.canMoveTo(newX, newY)) {
-        this.playerPos.x = newX
-        this.playerPos.y = newY
-        this.player.setPosition(
-          this.playerPos.x * this.tileSize,
-          this.playerPos.y * this.tileSize
-        )
+      } else if ( moveY === 1 && moveX === -1) {
+        this.jump_rabbit("down", "left", moveX, moveY, time) 
+
+      } else if ( moveY === 1 && moveX === 1) {
+        this.jump_rabbit("down", "right", moveX, moveY, time)
       }
-
-      this.lastMoveTime = time
     }
-
-
-  // === ACTUALIZAR MARIPOSAS ===
-  this.butterflies.children.iterate(butterfly => {
-  if (!butterfly) return
     
-  const dir = butterfly.direction === 'right' ? 1 : -1
-  butterfly.x += dir * butterfly.speed * this.game.loop.delta / 1000
-    
-  // Movimiento vertical oscilante
-  butterfly.y = butterfly.baseY + Math.sin(this.time.now * butterfly.frequency) * butterfly.amplitude
-    
-// Reaparecer al otro lado si sale de la pantalla
-  if (dir === 1 && butterfly.x > this.sys.game.config.width) {
-    butterfly.x = -this.tileSize
-    } else 
-    if (dir === -1 && butterfly.x < -this.tileSize) {
-        butterfly.x = this.sys.game.config.width
-      }
-    })
-
-    if (this.player.lives <= 0) {
-      this.scene.start('main-menu')
-      this.soundManager.stop("music_level1");
-    }
-
-    if (this.playerPos.x == 8 && this.playerPos.y == 9) {
-      this.scene.start("Level-Two")
-      this.soundManager.stop("music_level1");
+    if (this.cursors.up.isDown && this.cursors.left.isDown) {
+      // Arriba izquierda
+      moveY = -1
+      moveX = -1
+      this.jump_rabbit("up", "left", moveX, moveY, time)
+    } else if (this.cursors.up.isDown && this.cursors.right.isDown) {
+      // Arriba derecha
+      moveY = -1
+      moveX = 1
+      this.jump_rabbit("up", "right", moveX, moveY, time)
+    } else if (this.cursors.down.isDown && this.cursors.left.isDown) {
+      // Abajo izquierda
+      moveY = 1
+      moveX = -1
+      this.jump_rabbit("down", "left", moveX, moveY, time)
+    } else if (this.cursors.down.isDown && this.cursors.right.isDown) {
+      // Abajo derecha
+      moveY = 1
+      moveX = 1
+      this.jump_rabbit("down", "right", moveX, moveY, time)
     }
   }
 
@@ -204,4 +209,33 @@ export class LevelOneScene extends Scene {
 
     this.butterflies.add(butterfly)
   }
+
+  jump_rabbit(alt, dir, moveX, moveY, time) {
+    if ((moveX || moveY) && time > this.lastMoveTime + this.moveDelay) {
+      const newX = this.playerPos.x + moveX
+      const newY = this.playerPos.y + moveY 
+
+      if (this.canMoveTo(newX, newY)) {
+        this.isJumping = true;
+        this.player.anims.play(`rabbit_${alt}_${dir}`).setOrigin(0.5)
+        this.soundManager.play(`jump_${alt}`)
+
+        // Eliminar listeners anteriores
+        this.player.off("animationcomplete")
+
+        this.player.once("animationcomplete", () => {
+          this.playerPos.x = newX
+            this.playerPos.y = newY
+            this.player.setPosition(
+            this.playerPos.x * this.tileSize,
+            this.playerPos.y * this.tileSize
+          )
+          this.player.anims.play(`rabbit_${dir}_idle`).setOrigin(0.6)
+          this.isJumping = false;
+        })
+        this.lastMoveTime = time
+      }
+    }
+  }
+
 }

@@ -8,23 +8,33 @@ export class BootScene extends Scene {
 
   preload() {
     this.load.spritesheet("tittle", "./assets/title.png",  {
-      frameWidth: 166,
-      frameHeight: 8,
+      frameWidth: 152,
+      frameHeight: 75,
     });
 
     this.load.image("background", "./assets/pradera.png");
     this.load.image("fase2background", "./assets/fase2.png");
     this.load.image("background2", "./assets/pradera2.png");
 
-    this.load.spritesheet("rabbit", "./assets/rabbit.png",  {
-      frameWidth: 13,
-      frameHeight: 15,
+    this.load.spritesheet("rabbit", "./assets/rabbit-idle-spritesheet.png",  {
+      frameWidth: 60,
+      frameHeight: 60,
     });
     this.load.spritesheet("rabbit_life", "./assets/rabbit_life.png",  {
       frameWidth: 9,
       frameHeight: 8,
     });
-    this.load.image("mariposa", "./assets/mariposa.png");
+
+    // Salto
+    this.load.spritesheet("rabbit_jump", "./assets/rabbit-spritesheet.png",  {
+      frameWidth: 60,
+      frameHeight: 60,
+    });
+
+    this.load.spritesheet("mariposa", "./assets/mariposa.png", {
+      frameWidth: 7,
+      frameHeight: 11,
+    });
     this.load.image("platforma", './assets/plataforma-bl.png');
     this.load.spritesheet('olas', './assets/olas-spr-sh.png', {
       frameWidth: 320,
