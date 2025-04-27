@@ -29,28 +29,28 @@ export function initialAnimations(scene) {
     // Saltos
     scene.anims.create({
       key: "rabbit_up_right",
-      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 0, end: 4 }),
+      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 0, end: 3 }),
       frameRate: 15,
       repeat: 0,
     });
 
     scene.anims.create({
       key: "rabbit_up_left",
-      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 5, end: 9 }),
+      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 4, end: 7 }),
       frameRate: 15,
       repeat: 0,
     });
 
     scene.anims.create({
       key: "rabbit_down_right",
-      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 10, end: 14 }),
+      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 8, end: 11 }),
       frameRate: 15,
       repeat: 0,
     });
 
     scene.anims.create({
       key: "rabbit_down_left",
-      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 15, end: 19 }),
+      frames: scene.anims.generateFrameNumbers("rabbit_jump", { start: 12, end: 15 }),
       frameRate: 15,
       repeat: 0,
     });

@@ -19,7 +19,7 @@ export class LevelOneScene extends Scene {
     this.soundManager = this.registry.get("soundManager");
 
     // Data inicial
-    const { level = 'level1', phase = 'phase1', score = 0, currentTime = 10, lives = 3 } = data || {};
+    const { level = 'level1', phase = 'phase1', score = 0, currentTime = 100, lives = 3 } = data || {};
     this.registry.set("score", score);
     this.registry.set("lives", lives);
     this.currentTime = currentTime;
@@ -35,8 +35,11 @@ export class LevelOneScene extends Scene {
     this.add.image(160, 112, 'background');
 
     // 🌥️ Nubes parallax
-    this.nube1 = this.add.image(160, 5, 'nube').setScrollFactor(0.2);
-    this.nube2 = this.add.image(200, 9, 'nube').setScrollFactor(0.3);
+    this.nube = this.add.tileSprite(this.scale.width * 0.5, this.scale.height * 0.1, 0, 0, "nube").setDepth(1);
+    this.parallax = [{
+      speed: 0.2,
+      sprite: this.nube
+    }]
 
     // Olas
     const olas = this.add.sprite(160, 112, 'olas').setDepth(1);
@@ -93,13 +96,13 @@ export class LevelOneScene extends Scene {
           this.soundManager.play("lose_life");
       
           if (lives <= 0) {
-            this.scene.start("main-menu");
+            this.scene.start("Boot");
             return;
           }
       
           this.timer.paused = true;
           const score = this.registry.get("score");
-          this.scene.start("level-one", { lives, score, currentTime: 10 });
+          this.scene.start("level-one", { lives, score, currentTime: 100 });
         }
       }
     });
@@ -115,8 +118,7 @@ export class LevelOneScene extends Scene {
 
   update(time) {
     // Parallax Nubes
-    this.nube1.x += 0.02;
-    this.nube2.x += 0.04;
+    this.moveParallax();
 
     // Input
     this.inputManager.update();
@@ -168,18 +170,22 @@ export class LevelOneScene extends Scene {
     if (this.isJumping) return;
 
     if (this.cursors.up.isDown && this.cursors.left.isDown) {
+      // Arriba Izquierda
       moveY = -1
       moveX = -1
       this.processMovement(moveX, moveY, time);
     } else if (this.cursors.up.isDown && this.cursors.right.isDown) {
+      // Arriba Derecha
       moveY = -1
       moveX = 1
       this.processMovement(moveX, moveY, time);
     } else if (this.cursors.down.isDown && this.cursors.left.isDown) {
+      // Abajo izquierda
       moveY = 1
       moveX = -1
       this.processMovement(moveX, moveY, time);
     } else if (this.cursors.down.isDown && this.cursors.right.isDown) {
+      // Abajo Derecha
       moveY = 1
       moveX = 1
       this.processMovement(moveX, moveY, time);
@@ -254,5 +260,11 @@ export class LevelOneScene extends Scene {
       return this.walkableMap[y][x] === true;
     }
     return fallback;
+  }
+
+  moveParallax() {
+    this.parallax.forEach((layer) => {
+      layer.sprite.tilePositionX += layer.speed;
+    });
   }
 }

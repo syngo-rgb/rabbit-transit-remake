@@ -22,20 +22,20 @@ class UIScene extends Scene {
     }
 
     // Texto de PUNTOS
-    this.scoreText = this.add.text(10, 10, "100", {
-      fontFamily: "Arial",
-      fontSize: "24px",
-      color: "#FFFFFF",
+    this.scoreText = this.add.text(this.cameras.main.width * 0.5, 20, "100", {
+      fontFamily: "'Press Start 2P'",
+      fontSize: "8px",
+      color: "#0000ff",
       align: "left"
-    }).setOrigin(0, 0);
+    }).setOrigin(0.5);
 
     // Texto de TIEMPO
-    this.timeText = this.add.text(this.cameras.main.width - 10, 10, "0", {
-      fontFamily: "Arial",
-      fontSize: "24px",
+    this.timeText = this.add.text(this.cameras.main.width - 25, this.cameras.main.height * 0.92, "100", {
+      fontFamily: "'Press Start 2P'",
+      fontSize: "8px",
       color: "#FFFFFF",
       align: "right"
-    }).setOrigin(1, 0);
+    }).setOrigin(0.5);
 
     // Array para mostrar vidas (corazones/conejos)
     this.arrayHP = [];
@@ -71,7 +71,7 @@ class UIScene extends Scene {
     let x = 20;
 
     for (let i = 0; i < lives; i++) {
-      const heart = this.add.sprite(x, 40, "conejiti");
+      const heart = this.add.sprite(x, this.cameras.main.height * 0.92, "conejiti");
       heart.setOrigin(0.5);
       this.arrayHP.push(heart);
       x += 12;

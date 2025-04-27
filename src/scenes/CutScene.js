@@ -1,8 +1,8 @@
 // scenes/CutScene.js
 
-import Phaser from 'phaser';
+import {Scene} from 'phaser';
 
-export class CutScene extends Phaser.Scene {
+export class CutScene extends Scene {
   constructor() {
     super({ key: 'CutScene' });
   }

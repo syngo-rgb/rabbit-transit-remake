@@ -38,7 +38,7 @@ export class LevelTwoScene extends Scene {
       
           if (lives <= 0) {
             this.timer.paused = true;
-            this.scene.start("main-menu");
+            this.scene.start("Boot");
             return;
           }
       
@@ -56,7 +56,7 @@ export class LevelTwoScene extends Scene {
             );
   
             this.registry.set('currentTime', 10);
-            this.currentTime = this.currentTime += 10
+            this.currentTime = this.currentTime += 100
             return
           }
         }
