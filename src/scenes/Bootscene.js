@@ -1,5 +1,6 @@
 // BootScene.js
 import { Scene } from "phaser";
+import WebFont from "webfontloader";
   
 export class BootScene extends Scene {
   constructor() {
@@ -20,16 +21,22 @@ export class BootScene extends Scene {
       frameWidth: 60,
       frameHeight: 60,
     });
+    this.load.image("conejiti", "./assets/conejiti.png");
+    this.load.image("rabbit_sprite", "./assets/rabbit-sprite.png")
+
     this.load.spritesheet("rabbit_life", "./assets/rabbit_life.png",  {
       frameWidth: 9,
       frameHeight: 8,
     });
 
+    
     // Salto
     this.load.spritesheet("rabbit_jump", "./assets/rabbit-spritesheet.png",  {
       frameWidth: 60,
       frameHeight: 60,
     });
+
+    this.load.image("mariposa_sprite", "./assets/mariposa-sprite.png")
 
     this.load.spritesheet("mariposa", "./assets/mariposa.png", {
       frameWidth: 7,
@@ -41,6 +48,17 @@ export class BootScene extends Scene {
       frameHeight: 224,
     });
     this.load.image("nube", "./assets/nube.png");
+
+    // 🎵 Carga de sonidos
+    // this.load.bitmapFont("Pixeled", "./assets/font/pixeled.png", "./assets/font/pixeled.xml");
+    WebFont.load({
+      google: {
+        families: ["Press Start 2P"],
+      },
+      active: () => {
+        console.log("Fuentes cargadas.");
+      },
+    });
 
     // 🎵 Carga de sonidos
     this.load.audio("cut_scene", "./assets/audio/cut_scene.wav");
