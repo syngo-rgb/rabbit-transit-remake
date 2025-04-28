@@ -23,7 +23,7 @@ export class LevelOneScene extends Scene {
     this.registry.set("score", score);
     this.registry.set("lives", lives);
     this.currentTime = currentTime;
-    this.initialTime = 100;
+    this.initialTime = 180;
 
     // Música
     if (this.soundManager) {

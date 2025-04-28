@@ -2,6 +2,9 @@ import { BootScene } from './scenes/Bootscene.js'
 import { MenuScene } from './scenes/MenuScene.js'
 import { LevelOneScene } from './scenes/LevelOneScene.js'
 import { LevelTwoScene } from './scenes/LevelTwoScene.js'
+import { LevelThreeScene } from './scenes/LevelThreeScene.js'
+import { LevelFourScene } from './scenes/LevelFourScene.js'
+import { WinScene } from './scenes/WinScene.js'
 import { CutScene } from './scenes/CutScene.js' 
 import UIScene from './scenes/UIScene.js'
 
@@ -20,14 +23,14 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 0 },
-      debug: false,
+      debug: true,
     },
   },
   input: {
     gamepad: true
   },
 
-  scene: [BootScene, MenuScene, LevelOneScene, LevelTwoScene, CutScene, UIScene]
+  scene: [BootScene, MenuScene, LevelOneScene, LevelTwoScene, LevelThreeScene, LevelFourScene, WinScene, CutScene, UIScene]
 }
 
 export default new Phaser.Game(config);

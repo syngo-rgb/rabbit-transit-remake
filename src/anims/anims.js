@@ -70,5 +70,27 @@ export function initialAnimations(scene) {
       frameRate: 20,
       repeat: -1,
     });
+
+    scene.anims.create({
+      key: "bird_idle_right",
+      frames: scene.anims.generateFrameNames("bird", { start: 1, end: 4 }),
+      frameRate: 6,
+      repeat: -1
+    });
+    
+    scene.anims.create({
+      key: "bird_idle_left",
+      frames: scene.anims.generateFrameNames("bird", { start: 5, end: 9 }),
+      frameRate: 6,
+      repeat: -1
+    });
+    
+    scene.anims.create({
+      key: "bird_down",
+      frames: scene.anims.generateFrameNames("bird-down", { start: 1, end: 4 }),
+      frameRate: 8,
+      repeat: -1
+    });
+    
   }
 }

@@ -16,7 +16,7 @@ export class BootScene extends Scene {
     this.load.image("background", "./assets/pradera.png");
     this.load.image("fase2background", "./assets/fase2.png");
     this.load.image("background2", "./assets/pradera2.png");
-
+    this.load.image("grafo", "./assets/grafo-plataformas.png");
     this.load.spritesheet("rabbit", "./assets/rabbit-idle-spritesheet.png",  {
       frameWidth: 60,
       frameHeight: 60,
@@ -48,6 +48,15 @@ export class BootScene extends Scene {
       frameHeight: 224,
     });
     this.load.image("nube", "./assets/nube.png");
+
+    this.load.spritesheet("bird", "./assets/bird_spritesheet.png", {
+      frameWidth: 32,
+      frameHeight: 22,
+    });
+    this.load.spritesheet("bird-down", "./assets/bird_down.png", {
+      frameWidth: 17,
+      frameHeight: 36,
+    });
 
     // 🎵 Carga de sonidos
     // this.load.bitmapFont("Pixeled", "./assets/font/pixeled.png", "./assets/font/pixeled.xml");

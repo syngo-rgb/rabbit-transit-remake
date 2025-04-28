@@ -3,9 +3,9 @@ import { levelData } from "../data/levelData";
 import { ScoreManager } from "../managers/ScoreManager";
 import { InputManager } from "../components/InputManager";
 
-export class LevelTwoScene extends Scene {
+export class LevelFourScene extends Scene {
   constructor() {
-    super("Level-Two");
+    super("Level-Four");
     this.paintedPlatform = [];
     this.colors = [0xff004d, 0xffa300, 0xffec27, 0x00e436, 0x954adf];
     this.colorIndex = 0;
@@ -19,11 +19,7 @@ export class LevelTwoScene extends Scene {
   }
 
   create(data) {
-    console.log("LevelTwoScene created");
-    this.bird = null;
-    this.birdActive = false;
-    this.birdTimer = null;
-
+    console.log("LevelTFourScene created");
 
     this.soundManager = this.registry.get("soundManager");
 
@@ -42,12 +38,13 @@ export class LevelTwoScene extends Scene {
       
           if (lives <= 0) {
             this.timer.paused = true;
+            
             this.scene.start("Boot");
             return;
           }
       
           // const score = this.registry.get("score");
-          // this.scene.start("Level-Two", { lives: lives, score: score, currentTime: 10 });
+          // this.scene.start("Level-four", { lives: lives, score: score, currentTime: 10 });
           while (!this.isJumping) {
             this.playerPos.x = 8
             this.playerPos.y = 9
@@ -66,30 +63,6 @@ export class LevelTwoScene extends Scene {
         }
       }
     });
-
-    this.appearBird = this.time.addEvent({
-      delay: 1200,
-      loop: true,
-      callback: () => {
-
-        if (this.birdActive) return; // Si ya hay uno activo, no spawnea otro
-    
-        const fromLeft = Phaser.Math.Between(0, 1) === 0; // 50% chance
-        const y = (this.sys.game.config.height / 8); // 1/5 parte de la altura de pantalla
-        const x = fromLeft ? -20 : this.sys.game.config.width + 20; // Fuera de pantalla inicial
-    
-        this.bird = this.physics.add.sprite(x, y, "bird"); 
-        this.bird.setDepth(15);
-        this.bird.body.setAllowGravity(false);
-        this.bird.speed = fromLeft ? 80 : -80; // velocidad hacia adentro
-        this.bird.play(fromLeft ? "bird_idle_right" : "bird_idle_left");
-    
-        this.birdActive = true;
-
-      }
-    })
-
-
 
     const { score = 0 } = data || {};
     this.registry.set("lives", data.lives || 3);
@@ -153,6 +126,28 @@ export class LevelTwoScene extends Scene {
       }
     }
 
+    this.appearBird = this.time.addEvent({
+      delay: 1200,
+      loop: true,
+      callback: () => {
+
+        if (this.birdActive) return; // Si ya hay uno activo, no spawnea otro
+    
+        const fromLeft = Phaser.Math.Between(0, 1) === 0; // 50% chance
+        const y = (this.sys.game.config.height / 8); // 1/5 parte de la altura de pantalla
+        const x = fromLeft ? -20 : this.sys.game.config.width + 20; // Fuera de pantalla inicial
+    
+        this.bird = this.physics.add.sprite(x, y, "bird"); 
+        this.bird.setDepth(15);
+        this.bird.body.setAllowGravity(false);
+        this.bird.speed = fromLeft ? 86 : -86; // velocidad hacia adentro
+        this.bird.play(fromLeft ? "bird_idle_right" : "bird_idle_left");
+    
+        this.birdActive = true;
+
+      }
+    })
+
     this.cursors = this.input.keyboard.createCursorKeys();
     this.inputManager = new InputManager(this);
     this.inputManager.setup();
@@ -191,7 +186,7 @@ export class LevelTwoScene extends Scene {
         this.bird.isDropping = true;
         this.bird.body.setAllowGravity(false); // activa gravedad
         this.bird.setVelocityX(0); // velocidad hacia abajo
-        this.bird.setVelocityY(100); // velocidad hacia abajo
+        this.bird.setVelocityY(140); // velocidad hacia abajo
         this.bird.anims.play("bird_down", true).setOrigin(0.5).setSize(10, 15);
     
         // Opcional: reproducir sonido de ataque
@@ -207,7 +202,7 @@ export class LevelTwoScene extends Scene {
         this.soundManager.play("hurt");
     
         if (this.player.lives <= 0) {
-          // Manejar derrota aquí si quieres
+          this.sound.stopByKey('music_level2');
           this.scene.start("Boot");
         }
       }
@@ -222,42 +217,43 @@ export class LevelTwoScene extends Scene {
         this.bird.destroy();
         this.birdActive = false;
       }
+
+      this.paintedPlatform.forEach((plataforma, index) => {
+        if (this.physics.overlap(this.bird, plataforma)) {
+          plataforma.clearTint(); // Saca el color
+          plataforma.setAlpha(0); // Opcional: invisible
+          this.paintedPlatform.splice(index, 1); // Eliminar del array paintedPlatform
+        }
+      })
     }
-    
 
     if (this.playerUnmove) {
-      // reposicionas al conejo (puedes omitirlo si ya está bien posicionado)
-      this.playerPos.x = 2;
-      this.playerPos.y = 2;
-    
-      if (this.playerPos.x === 2 && this.playerPos.y === 2) {
-        // calculas el tiempo restante a partir de tu variable
+        // Calcula el tiempo restante y aplica bonificaciones
         const timeRemaining = this.currentTime;
-    
-        this.soundManager.play("win_game");
         this.scoreManager.addLevelCompleteBonus();
         this.scoreManager.addTimeBonus(timeRemaining);
-    
-        // actualizas el registry (para el HUD)
+      
+        // Actualiza el registry para UIScene u otras escenas
         const finalScore = this.scoreManager.getScore();
-        const finalLives = this.registry.get("lives");
-        this.registry.set("score", finalScore);
-        this.registry.set("lives", finalLives);
-    
-        this.soundManager.stop("music_level2");
-    
-        // ✨ aquí pasas los datos al siguiente nivel
-        // 1. Lee de registry (o de tus propias props) los datos finales
-        const lives = this.registry.get("lives")    // o this.lifes si la llevas ahí
-        const score = this.registry.get("score")
-        const currentTime = this.registry.get("currentTime") || 0
-
-    // 2. Arranca la escena 3 pasando esos datos
-        this.scene.start("Level-Three", { lives, score, currentTime })
+        const finalLives = this.registry.get('lives');
+        this.registry.set('score', finalScore);
+        this.registry.set('lives', finalLives);
+        this.registry.set('currentTime', timeRemaining);
+      
+        // Detiene sólo la música de fondo del nivel (sin afectar efectos cortos)
+        this.sound.stopByKey('music_level2');
+        // Reproduce el efecto/música de victoria
+        this.sound.play('win_game');
+      
+        // Pasa a la escena de victoria con los datos
+        this.scene.start('WinScene', {
+          lives:  finalLives,
+          score:  finalScore,
+          currentTime: timeRemaining
+        });
+      
+        return;
       }
-    
-      return;
-    }
 
     let moveX = 0
     let moveY = 0
